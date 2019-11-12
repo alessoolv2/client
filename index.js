@@ -16,8 +16,8 @@ saludo();
   inquirer.init()
   .then((values) => {
     myAsyncFunc(values);
-  });
-  /*.finally(() => {
+  })
+  .finally(() => {
       //out(answers);
       inquirerKC.init()
       .then(values => {
@@ -30,7 +30,7 @@ saludo();
         });
       })
       
-  });*/
+  });
 
  
   
