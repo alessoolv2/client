@@ -2,6 +2,7 @@
 
 const inquirer  = require('./lib/inquirer.js');
 const inquirerKC = require('./lib/inquirerKaralundiComponents');
+const inquirerBC = require('./lib/inquirerBiometricComponents');
 const saludo = require('./lib/inicio/saludo.js');
 
 var execSync = require('child_process').execSync;
@@ -12,12 +13,16 @@ saludo();
       
    inquirer.init()
    .then(answers => {
-    //out(answers);
-    console.log(answers);
-    inquirerKC.init()
-  .then(values => {
-    console.log(values);
-  });
+      //out(answers);
+      console.log(answers);
+      inquirerKC.init()
+      .then(values => {
+        console.log(values);
+        inquirerBC.init()
+        .then((values) => {
+          console.log(values);
+        });
+    });
   });
 
   
