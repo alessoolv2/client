@@ -8,25 +8,44 @@ const saludo = require('./lib/inicio/saludo.js');
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
 
+let atributosProyecto; // undefined until myAsyncFunc is called
+
 
 saludo();
-      
-   inquirer.init()
-   .then(answers => {
+
+  inquirer.init()
+  .then((values) => {
+    myAsyncFunc(values);
+  });
+  /*.finally(() => {
       //out(answers);
-      console.log(answers);
       inquirerKC.init()
       .then(values => {
         console.log(values);
+      })
+      .finally(()=> {
         inquirerBC.init()
-        .then((values) => {
-          console.log(values);
+        .then((a) => {
+          console.log(a);
         });
-    });
-  });
+      })
+      
+  });*/
+
+ 
+  
+  
 
   
+
+  myAsyncFunc = (result) => { 
+     console.log(result);
+     atributosProyecto = result;
+     console.log(atributosProyecto.projectName);
+  };
   
+
+
   function out(value){
     console.log(value);
     let execute = ("react-native init "+value.name+"");
@@ -34,8 +53,12 @@ saludo();
     var child = exec(execute,
         function(err, stdout, stderr) {
           if (err) throw err;
-          else console.log(stdout);
-      });
+          else {
+            console.log(stdout);
+            console.log("ACABO");
+          }
+          }
+      );
     
 } 
 
