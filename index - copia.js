@@ -1,26 +1,28 @@
 #!/usr/bin/env node
-
+const chalk = require('chalk');
+const figlet = require('figlet');
 const inquirer  = require('./lib/inquirer.js');
-const inquirerKC = require('./lib/inquirerKaralundiComponents');
-const saludo = require('./lib/inicio/saludo.js');
 
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
-
-
-saludo();
-      
-   inquirer.init()
-   .then(answers => {
-    //out(answers);
-    console.log(answers);
-    inquirerKC.init()
-  .then(values => {
-    console.log(values);
-  });
-  });
+console.log(
+    chalk.cyan(
+      figlet.textSync('Karalundi', { horizontalLayout: 'fitted' })
+    )
+  );
+  console.log(
+      chalk.blue(
+        figlet.textSync('Boilerplate', { horizontalLayout: 'fitted' })
+      )
+    );
+  console.log(chalk.blue("INSTITUTO TECNOLOGICO DE ZITÁCUARO\nJóse Arturo Olvera Paulino."));
 
   
+   inquirer.askGithubCredentials()
+   .then(answers => {
+    out(answers);
+    
+  });
   
   function out(value){
     console.log(value);
