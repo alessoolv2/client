@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+/*
 const inquirer  = require('./lib/inquirer.js');
 const inquirerKC = require('./lib/inquirerKaralundiComponents');
 const inquirerBC = require('./lib/inquirerBiometricComponents');
@@ -9,8 +9,18 @@ var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
 
 let atributosProyecto; // undefined until myAsyncFunc is called
+*/
+let projectName = "Prueba2";
+let subForders = "/src"
+var fs = require('fs');
+var mkdirp = require('mkdirp');
+console.log("HOLA MUNDO");
+mkdirp(projectName+subForders, function (err) {
+  if (err) console.error(err)
+  else console.log('pow!')
+});
 
-
+/*
 saludo();
 
   inquirer.init()
@@ -31,7 +41,7 @@ saludo();
       })
       
   });
-
+*/
  
   
   
