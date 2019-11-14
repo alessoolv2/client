@@ -14,11 +14,13 @@ let projectName = "Prueba2";
 let mainFolder = "/src/"
 let subForders = ["assets","catalogs","components","redux","sagas","screens","styles","utils"];
 let elegidos = ["redux","sagas","screens","utils"];
+let otro = [];
 var fs = require('fs');
 var mkdirp = require('mkdirp');
 console.log("HOLA MUNDO");
-mapeo(subForders,elegidos);
-//crearCarpetasProyecto(projectName,mainFolder,subForders);
+subForders = mapeo(elegidos);
+console.log(subForders);
+crearCarpetasProyecto(projectName,mainFolder,subForders);
 
 /*
 saludo();
@@ -72,20 +74,26 @@ saludo();
     
   }  
 
-  function mapeo(subForders,elegidos){
-    var a = subForders.indexOf(elegidos.map((r)=> r));
-    console.log(a);
+  function mapeo(elegidos){
+    return elegidos;
   }
 
   function crearCarpetasProyecto(projectName,mainFolder,subForders){
-    subForders.map((folder)=>{
-      //console.log(projectName+mainFolder+folder);
-      mkdirp(projectName+mainFolder+folder, function (err) {
+    console.log(subForders.length > 0);
+    if( subForders.length > 0 ){
+      subForders.map((folder)=>{
+        //console.log(projectName+mainFolder+folder);
+        mkdirp(projectName+mainFolder+folder, function (err) {
+          if (err) console.error(err)
+          else console.log('pow!')
+        });
+      });
+    }else{
+      mkdirp(projectName+mainFolder, function (err) {
         if (err) console.error(err)
         else console.log('pow!')
       });
-    })
-    
+    }
   }
 
   

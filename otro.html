@@ -1,0 +1,111 @@
+<!--https://addyosmani.com/resources/essentialjsdesignpatterns/book/-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        // A car "class"
+        function Car( model ) {
+        
+        this.model = model;
+        this.color = "silver";
+        this.year = "2012";
+
+        this.getInfo = function () {
+        return this.model + " " + this.year;
+        };
+
+        }
+
+        var myCar = new Car("ford");
+ 
+        myCar.year = "2010";
+        
+        console.log( myCar.getInfo() );
+    </script>
+
+    <script>
+        var mySingleton = (function () {
+ 
+            // Instance stores a reference to the Singleton
+            var instance;
+
+            function init() {
+                // Singleton
+                // Private methods and variables
+                function privateMethod(){
+                    console.log( "I am private" );
+                }
+
+                var privateVariable = "Im also private";
+
+                var privateRandomNumber = Math.random();
+
+                var hello = "HOLA MUNDO";
+                return {
+
+                    // Public methods and variables
+                    publicMethod: function () {
+                        console.log( "The public can see me!" );
+                    },
+
+                    publicProperty: "I am also public",
+
+                    getRandomNumber: function() {
+                        return privateRandomNumber;
+                    },
+                    getHello : function(){
+                        return hello;
+                    },
+                    setHello: function(hola){
+                        hello = hola;
+                    }
+
+                };
+
+            };
+
+            return {
+
+                // Get the Singleton instance if one exists
+                // or create one if it doesn't
+                getInstance: function () {
+
+                    if ( !instance ) {
+                    instance = init();
+                    }
+
+                    return instance;
+                }
+
+            };
+
+        })();
+
+        
+
+        // Usage:
+
+        var singleA = mySingleton.getInstance();
+        var singleB = mySingleton.getInstance();
+        var singleC = mySingleton.getInstance();
+        singleA.setHello("HOLA");
+        console.log("singleA: "+singleA.getHello());
+        console.log("singleB: "+singleB.getRandomNumber());
+        console.log("singleC: "+singleC.getHello());
+        console.log( singleA.getRandomNumber() === singleB.getRandomNumber()); // true
+
+        
+
+        // Note: as we are working with random numbers, there is a
+        // mathematical possibility both numbers will be the same,
+        // however unlikely. The above example should otherwise still
+        // be valid.
+    </script>
+</body>
+</html>
