@@ -12,43 +12,42 @@ var exec = require('child_process').exec;
 let storage = Storage.getInstance();//Singleton Storage
 let subForders = [];
 let mainFolder = "/src/";
+  
 
-
-new Introduction();
-
-Input.projectAttributes.init()
-  .then((values) => {
-    storage.setProjectName(values.projectName);
-    storage.setProjectAttributes(values.attributes);
-  })
-  .finally(() => {
-      //out(answers);
-      let isKaralundiComponents = storage.getProjectAttributes().find((attribute)=> attribute=='kc') == 'kc';
-      if(isKaralundiComponents){
-        Input.karalundiComponents.init()
-        .then(values => {
-          storage.setKaralundiComponents(values.attributes);
-        })
-        .finally(() =>{
-          Input.biometricComponents.init()
+  async function initalize() {
+    let reject  = () => {console.log("REJECT")};
+    return new Promise(()=>{
+      Input.projectAttributes.init()
+      .then((values) => {
+        storage.setProjectName(values.projectName);
+        storage.setProjectAttributes(values.attributes);
+      })
+      .finally(() => {
+          //out(answers);
+          let isKaralundiComponents = storage.getProjectAttributes().find((attribute)=> attribute=='kc') == 'kc';
+          if(isKaralundiComponents){
+            Input.karalundiComponents.init()
+            .then(values => {
+              storage.setKaralundiComponents(values.attributes);
+            })
+            .finally(() =>{
+              Input.biometricComponents.init()
+                .then((values) => {
+                  storeBiometrics(values.biometrics);
+                })
+            });
+          }
+          else{
+            Input.biometricComponents.init()
             .then((values) => {
               storeBiometrics(values.biometrics);
             })
-            .finally(()=>{
-              showValues();
-            });
-        });
-      }
-      else{
-        Input.biometricComponents.init()
-        .then((values) => {
-          storeBiometrics(values.biometrics);
-        })
-        .finally(()=>{
-          showValues();
-        });
-      }
-  });
+          }
+      });
+    },(reject));
+    
+  }
+
 
   function storeBiometrics(attributes){
     storage.setBiometricComponents(attributes);
@@ -59,8 +58,8 @@ Input.projectAttributes.init()
     console.log(storage.getProjectAttributes());
     console.log(storage.getKaralundiComponents());
     console.log(storage.getBiometricComponents());
-    //createProject();
-    //makeFolders();
+    createProject();
+    makeFolders();
     installDependencies();
   };
 
@@ -83,23 +82,53 @@ Input.projectAttributes.init()
             console.log("Se ha finalizado la creación del proyecto!");
           }
           }
-      );
+    );
   }  
 
+  function process(){
+    var child = exec("cd "+storage.getProjectName(),
+      function(err, stdout, stderr) {
+        if (err) throw err;
+        else {
+          console.log(stdout);
+          console.log("Abir proyecto");
+        }
+        }
+    );
+  }
+
   function installDependencies(){
-    let out = [];
     storage.getProjectAttributes().forEach((item,index) => {
       //console.log("{dependencie: "+Instructions[item]);
-      out.push(Instructions[item]);
+      if(!(Instructions[item] == undefined)){
+        var child = exec(Instructions[item],
+          function(err, stdout, stderr) {
+            if (err) throw err;
+            else {
+              console.log(stdout);
+              console.log("Se ha finalizado la implementación de dependencias!");
+            }
+            }
+        );
+        console.log(Instructions[item]);
+      }
     });
-    console.log("Dependencies: "+out[0]);
+    
   }
 
 class Main{
   constructor() {
     new Introduction();
+    let inputs = initalize();
+
+    inputs.then(()=>{//Lanzar thread final 
+      console.log('Resuelto');
+      showValues();
+    });
+    
+    
   }
 
 }
 
-//new Main();
+new Main();
