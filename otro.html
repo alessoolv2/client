@@ -107,5 +107,35 @@
         // however unlikely. The above example should otherwise still
         // be valid.
     </script>
+
+    <script>
+        var namespace = {
+            getSingleton: (function() { // BEGIN iife
+            var singleton;
+            var numero  = Math.random();
+            return function() {
+                if (!singleton) {
+                singleton = {
+                    amethod: function(nuevoNum) {
+                    numero = nuevoNum;
+                    },
+                    getAmethod: function() {
+                    console.log(numero);
+                    }
+                }
+                }
+                return singleton;
+            };
+            }()) // END iife
+        };
+        var a  = namespace.getSingleton();
+        a.amethod("FDfdsfs");
+        a.getAmethod();
+        var b = namespace.getSingleton();
+        b.getAmethod();
+        var c = namespace.getSingleton();
+        c.amethod("NO");
+  // Invoke: namespace.getSingleton().amethod()
+    </script>
 </body>
 </html>

@@ -1,102 +1,105 @@
 #!/usr/bin/env node
-/*
-const inquirer  = require('./lib/inquirer.js');
-const inquirerKC = require('./lib/inquirerKaralundiComponents');
-const inquirerBC = require('./lib/inquirerBiometricComponents');
-const saludo = require('./lib/inicio/saludo.js');
+const Introduction = require('./lib/introduction/Introduction');
+const Storage = require('./lib/storage/Storage');
+const Input = require('./lib/inputs/Inputs');
+const CreateFolders = require('./lib/utils/CreateFolders');
+const Instructions = require('./lib/catalogs/NodeInstructions');
 
+//For process to create new folders and files
 var execSync = require('child_process').execSync;
 var exec = require('child_process').exec;
 
-let atributosProyecto; // undefined until myAsyncFunc is called
-*/
-let projectName = "Prueba2";
-let mainFolder = "/src/"
-let subForders = ["assets","catalogs","components","redux","sagas","screens","styles","utils"];
-let elegidos = ["redux","sagas","screens","utils"];
-let otro = [];
-var fs = require('fs');
-var mkdirp = require('mkdirp');
-console.log("HOLA MUNDO");
-subForders = mapeo(elegidos);
-console.log(subForders);
-crearCarpetasProyecto(projectName,mainFolder,subForders);
+let storage = Storage.getInstance();//Singleton Storage
+let subForders = [];
+let mainFolder = "/src/";
 
-/*
-saludo();
 
-  inquirer.init()
+new Introduction();
+
+Input.projectAttributes.init()
   .then((values) => {
-    myAsyncFunc(values);
+    storage.setProjectName(values.projectName);
+    storage.setProjectAttributes(values.attributes);
   })
   .finally(() => {
       //out(answers);
-      inquirerKC.init()
-      .then(values => {
-        console.log(values);
-      })
-      .finally(()=> {
-        inquirerBC.init()
-        .then((a) => {
-          console.log(a);
+      let isKaralundiComponents = storage.getProjectAttributes().find((attribute)=> attribute=='kc') == 'kc';
+      if(isKaralundiComponents){
+        Input.karalundiComponents.init()
+        .then(values => {
+          storage.setKaralundiComponents(values.attributes);
+        })
+        .finally(() =>{
+          Input.biometricComponents.init()
+            .then((values) => {
+              storeBiometrics(values.biometrics);
+            })
+            .finally(()=>{
+              showValues();
+            });
         });
-      })
-      
+      }
+      else{
+        Input.biometricComponents.init()
+        .then((values) => {
+          storeBiometrics(values.biometrics);
+        })
+        .finally(()=>{
+          showValues();
+        });
+      }
   });
-*/
- 
-  
-  
 
-  
+  function storeBiometrics(attributes){
+    storage.setBiometricComponents(attributes);
+  }
 
-  myAsyncFunc = (result) => { 
-     console.log(result);
-     atributosProyecto = result;
-     console.log(atributosProyecto.projectName);
+  showValues = () => {
+    console.log(storage.getProjectName());
+    console.log(storage.getProjectAttributes());
+    console.log(storage.getKaralundiComponents());
+    console.log(storage.getBiometricComponents());
+    //createProject();
+    //makeFolders();
+    installDependencies();
   };
-  
 
+  function makeFolders(){
+    let status = storage.getProjectAttributes().find((attribute)=> attribute=='redux') == 'redux';
+    subForders = CreateFolders.toMapped(status);
+    console.log(subForders);
+    CreateFolders.createFolders(storage.getProjectName(),mainFolder,subForders);
+  }
 
-  function out(value){
-    console.log(value);
-    let execute = ("react-native init "+value.name+"");
+  function createProject(){
+    console.log(storage.getProjectName());
+    let execute = ("react-native init "+storage.getProjectName()+"");
     console.log(execute);
     var child = exec(execute,
         function(err, stdout, stderr) {
           if (err) throw err;
           else {
             console.log(stdout);
-            console.log("ACABO");
+            console.log("Se ha finalizado la creación del proyecto!");
           }
           }
       );
-    
   }  
 
-  function mapeo(elegidos){
-    return elegidos;
+  function installDependencies(){
+    let out = [];
+    storage.getProjectAttributes().forEach((item,index) => {
+      //console.log("{dependencie: "+Instructions[item]);
+      out.push(Instructions[item]);
+    });
+    console.log("Dependencies: "+out[0]);
   }
 
-  function crearCarpetasProyecto(projectName,mainFolder,subForders){
-    console.log(subForders.length > 0);
-    if( subForders.length > 0 ){
-      subForders.map((folder)=>{
-        //console.log(projectName+mainFolder+folder);
-        mkdirp(projectName+mainFolder+folder, function (err) {
-          if (err) console.error(err)
-          else console.log('pow!')
-        });
-      });
-    }else{
-      mkdirp(projectName+mainFolder, function (err) {
-        if (err) console.error(err)
-        else console.log('pow!')
-      });
-    }
+class Main{
+  constructor() {
+    new Introduction();
   }
 
-  
+}
 
-
- 
+//new Main();

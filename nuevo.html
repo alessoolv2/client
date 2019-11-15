@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+
+        function a(index,item){
+            instructions[item].map((e) => {
+                salida.push(e);
+            });
+        }
+        const instructions = { 
+            icons: ['npm install --save react-native-vector-icons'], 
+            alerts: ['npm i react-native-awesome-alerts-mod --save'],
+            axios: ['npm install axios'],
+            navigation: ['npm install react-navigation react-native-gesture-handler react-native-reanimated react-native-screens react-navigation-stack'],
+            redux: ['npm i -S redux react-redux','npm i -D redux-devtools'],
+        };
+        var attributes = [ 'adsd','kc','fadfad' ];
+        var inputDependencies = ['icons', 'alerts', 'axios', 'navigation'];
+        console.log(instructions["redux"].map((e) => console.log("AQUI"+e)));
+        console.log(attributes.find((attribute)=> attribute=='kc'));
+        const otro = [ 'icons', 'alerts', 'kc', 'axios', 'navigation', 'redux' ];
+        console.log(otro.find((attribute)=> attribute=='redux') == 'redux');
+        var salida = [];
+        inputDependencies.forEach((item,index) => {
+            instructions[item].map((e) => {
+                salida.push(e);
+            });
+        });
+        console.log(salida)
+
+    </script>
+</body>
+</html>
