@@ -12,42 +12,42 @@ var exec = require('child_process').exec;
 let storage = Storage.getInstance();//Singleton Storage
 let subForders = [];
 let mainFolder = "/src/";
-  
 
-  async function initalize() {
-    let reject  = () => {console.log("REJECT")};
-    return new Promise(()=>{
-      Input.projectAttributes.init()
-      .then((values) => {
-        storage.setProjectName(values.projectName);
-        storage.setProjectAttributes(values.attributes);
-      })
-      .finally(() => {
-          //out(answers);
-          let isKaralundiComponents = storage.getProjectAttributes().find((attribute)=> attribute=='kc') == 'kc';
-          if(isKaralundiComponents){
-            Input.karalundiComponents.init()
-            .then(values => {
-              storage.setKaralundiComponents(values.attributes);
-            })
-            .finally(() =>{
-              Input.biometricComponents.init()
-                .then((values) => {
-                  storeBiometrics(values.biometrics);
-                })
-            });
-          }
-          else{
-            Input.biometricComponents.init()
+new Introduction();
+
+Input.projectAttributes.init()
+  .then((values) => {
+    storage.setProjectName(values.projectName);
+    storage.setProjectAttributes(values.attributes);
+  })
+  .finally(() => {
+      //out(answers);
+      let isKaralundiComponents = storage.getProjectAttributes().find((attribute)=> attribute=='kc') == 'kc';
+      if(isKaralundiComponents){
+        Input.karalundiComponents.init()
+        .then(values => {
+          storage.setKaralundiComponents(values.attributes);
+        })
+        .finally(() =>{
+          Input.biometricComponents.init()
             .then((values) => {
               storeBiometrics(values.biometrics);
             })
-          }
-      });
-    },(reject));
-    
-  }
-
+            .finally(()=>{
+              showValues();
+            });
+        });
+      }
+      else{
+        Input.biometricComponents.init()
+        .then((values) => {
+          storeBiometrics(values.biometrics);
+        })
+        .finally(()=>{
+          showValues();
+        });
+      }
+  });
 
   function storeBiometrics(attributes){
     storage.setBiometricComponents(attributes);
@@ -58,9 +58,9 @@ let mainFolder = "/src/";
     console.log(storage.getProjectAttributes());
     console.log(storage.getKaralundiComponents());
     console.log(storage.getBiometricComponents());
-    createProject();
+    //createProject();
     makeFolders();
-    installDependencies();
+    //installDependencies();
   };
 
   function makeFolders(){
@@ -119,16 +119,8 @@ let mainFolder = "/src/";
 class Main{
   constructor() {
     new Introduction();
-    let inputs = initalize();
-
-    inputs.then(()=>{//Lanzar thread final 
-      console.log('Resuelto');
-      showValues();
-    });
-    
-    
   }
 
 }
 
-new Main();
+//new Main();
