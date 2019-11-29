@@ -13,7 +13,6 @@ let storage = Storage.getInstance();//Singleton Storage
 let subForders = [];
 let mainFolder = "/src/";
 
-
 new Introduction();
 
 Input.projectAttributes.init()
@@ -60,8 +59,8 @@ Input.projectAttributes.init()
     console.log(storage.getKaralundiComponents());
     console.log(storage.getBiometricComponents());
     //createProject();
-    //makeFolders();
-    installDependencies();
+    makeFolders();
+    //installDependencies();
   };
 
   function makeFolders(){
@@ -83,16 +82,38 @@ Input.projectAttributes.init()
             console.log("Se ha finalizado la creación del proyecto!");
           }
           }
-      );
+    );
   }  
 
+  function process(){
+    var child = exec("cd "+storage.getProjectName(),
+      function(err, stdout, stderr) {
+        if (err) throw err;
+        else {
+          console.log(stdout);
+          console.log("Abir proyecto");
+        }
+        }
+    );
+  }
+
   function installDependencies(){
-    let out = [];
     storage.getProjectAttributes().forEach((item,index) => {
       //console.log("{dependencie: "+Instructions[item]);
-      out.push(Instructions[item]);
+      if(!(Instructions[item] == undefined)){
+        var child = exec(Instructions[item],
+          function(err, stdout, stderr) {
+            if (err) throw err;
+            else {
+              console.log(stdout);
+              console.log("Se ha finalizado la implementación de dependencias!");
+            }
+            }
+        );
+        console.log(Instructions[item]);
+      }
     });
-    console.log("Dependencies: "+out[0]);
+    
   }
 
 class Main{

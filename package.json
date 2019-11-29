@@ -5,7 +5,7 @@
   "main": "index.js",
   "_location": "/cli-n",
   "bin": {
-    "cli-n": "index.js"
+    "karalundi-cli": "index.js"
   },
   "scripts": {
     "otro": "npm run test --silent",
