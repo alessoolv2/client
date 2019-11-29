@@ -58,9 +58,13 @@ Input.projectAttributes.init()
     console.log(storage.getProjectAttributes());
     console.log(storage.getKaralundiComponents());
     console.log(storage.getBiometricComponents());
-    //createProject();
-    makeFolders();
-    //installDependencies();
+
+    let execute = ("react-native init "+storage.getProjectName()+"");
+    exePross(execute).then((stdout)=>{
+      console.log(stdout);
+      makeFolders();
+      installDependencies();
+    });
   };
 
   function makeFolders(){
@@ -70,38 +74,29 @@ Input.projectAttributes.init()
     CreateFolders.createFolders(storage.getProjectName(),mainFolder,subForders);
   }
 
-  function createProject(){
-    console.log(storage.getProjectName());
-    let execute = ("react-native init "+storage.getProjectName()+"");
-    console.log(execute);
-    var child = exec(execute,
-        function(err, stdout, stderr) {
-          if (err) throw err;
-          else {
-            console.log(stdout);
-            console.log("Se ha finalizado la creación del proyecto!");
-          }
-          }
-    );
-  }  
 
-  function process(){
-    var child = exec("cd "+storage.getProjectName(),
-      function(err, stdout, stderr) {
-        if (err) throw err;
-        else {
-          console.log(stdout);
-          console.log("Abir proyecto");
-        }
-        }
-    );
-  }
+const exePross = (execute) => {
+  return new Promise((resolve, reject) => {
+    exec(execute, (error, stdout, stderr) => {
+      if (error) throw error;
+      console.log(stdout);
+      resolve(stdout? stdout : stderr);
+    });
+  });
+}
 
   function installDependencies(){
     storage.getProjectAttributes().forEach((item,index) => {
       //console.log("{dependencie: "+Instructions[item]);
       if(!(Instructions[item] == undefined)){
-        var child = exec(Instructions[item],
+        Instructions[item].forEach((instruction,i) => {
+          console.log("cd "+storage.getProjectName()+" && "+instruction);
+          exePross("cd "+storage.getProjectName()+" && "+instruction).then(()=>{
+            console.log("Se ha finalizado la implementación de dependencias!");
+          });
+        });
+        
+        /*var child = exec(Instructions[item],
           function(err, stdout, stderr) {
             if (err) throw err;
             else {
@@ -109,8 +104,8 @@ Input.projectAttributes.init()
               console.log("Se ha finalizado la implementación de dependencias!");
             }
             }
-        );
-        console.log(Instructions[item]);
+        );*/
+        //console.log(Instructions[item]);
       }
     });
     
